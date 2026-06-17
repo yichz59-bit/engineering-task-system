@@ -3,18 +3,22 @@ const modules = [
   {
     title: '项目管理',
     description: '管理项目生命周期、里程碑、成员和交付物。',
+    path: '/projects',
   },
   {
     title: '任务管理',
     description: '创建、分配、跟进任务状态和优先级。',
+    path: '/tasks',
   },
   {
     title: '需求管理',
     description: '维护需求、评审进度与需求变更记录。',
+    path: '/requirements',
   },
   {
     title: '数据看板',
     description: '展示关键指标、进度统计与工程健康状况。',
+    path: '/dashboard',
   },
 ]
 </script>
@@ -34,10 +38,10 @@ const modules = [
     <section class="modules">
       <h2>功能模块</h2>
       <div class="module-grid">
-        <article v-for="item in modules" :key="item.title" class="module-card">
+        <RouterLink v-for="item in modules" :key="item.title" :to="item.path" class="module-card">
           <h3>{{ item.title }}</h3>
           <p>{{ item.description }}</p>
-        </article>
+        </RouterLink>
       </div>
     </section>
   </main>
