@@ -1,80 +1,10 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { mockTasks, taskPriorityOptions, taskStatusOptions } from '@/mock/tasks'
+import type { DialogMode, TaskItem, TaskPriority, TaskStatus } from '@/types/task'
 
-type TaskStatus = '待开始' | '进行中' | '已完成' | '已延期'
-type TaskPriority = '高' | '中' | '低'
-type DialogMode = 'create' | 'edit' | 'view'
-
-interface TaskItem {
-  id: string
-  name: string
-  project: string
-  owner: string
-  status: TaskStatus
-  priority: TaskPriority
-  deadline: string
-}
-
-const statusOptions: TaskStatus[] = ['待开始', '进行中', '已完成', '已延期']
-const priorityOptions: TaskPriority[] = ['高', '中', '低']
-
-const tasks = ref<TaskItem[]>([
-  {
-    id: 'TASK-001',
-    name: '需求评审会议准备',
-    project: '工程任务系统',
-    owner: '张晨',
-    status: '进行中',
-    priority: '高',
-    deadline: '2026-06-24',
-  },
-  {
-    id: 'TASK-002',
-    name: '任务列表页面原型确认',
-    project: '工程任务系统',
-    owner: '李然',
-    status: '已完成',
-    priority: '中',
-    deadline: '2026-06-20',
-  },
-  {
-    id: 'TASK-003',
-    name: '项目成员权限梳理',
-    project: '协作平台升级',
-    owner: '王宁',
-    status: '待开始',
-    priority: '中',
-    deadline: '2026-06-28',
-  },
-  {
-    id: 'TASK-004',
-    name: '接口字段对齐',
-    project: '数据看板建设',
-    owner: '赵一',
-    status: '已延期',
-    priority: '高',
-    deadline: '2026-06-18',
-  },
-  {
-    id: 'TASK-005',
-    name: '测试用例补充',
-    project: '工程任务系统',
-    owner: '陈思',
-    status: '进行中',
-    priority: '低',
-    deadline: '2026-07-02',
-  },
-  {
-    id: 'TASK-006',
-    name: '看板指标口径确认',
-    project: '数据看板建设',
-    owner: '李然',
-    status: '待开始',
-    priority: '低',
-    deadline: '2026-07-05',
-  },
-])
+const tasks = ref<TaskItem[]>(mockTasks.map((task) => ({ ...task })))
 
 const queryForm = reactive({
   name: '',
@@ -82,6 +12,7 @@ const queryForm = reactive({
   owner: '',
 })
 
+// Keep input edits separate from applied filters so typing does not immediately change the table.
 const appliedQuery = reactive({
   name: '',
   status: '',
@@ -157,6 +88,7 @@ const resetTaskForm = () => {
 }
 
 const createTaskId = () => {
+  // New IDs are derived from the current in-memory list, including tasks added during this session.
   const maxNumber = tasks.value.reduce((max, task) => {
     const taskNumber = Number(task.id.replace('TASK-', ''))
 
@@ -204,6 +136,7 @@ const saveTask = () => {
     return
   }
 
+  // This page is static for now, so saves only update local memory and reset on refresh.
   if (dialogMode.value === 'create') {
     tasks.value.unshift({ ...taskForm })
     ElMessage.success('新增任务成功')
@@ -257,7 +190,7 @@ const deleteTask = async (task: TaskItem) => {
         <el-form-item label="任务状态">
           <el-select v-model="queryForm.status" clearable placeholder="请选择任务状态">
             <el-option
-              v-for="status in statusOptions"
+              v-for="status in taskStatusOptions"
               :key="status"
               :label="status"
               :value="status"
@@ -318,7 +251,7 @@ const deleteTask = async (task: TaskItem) => {
         <el-form-item label="状态">
           <el-select v-model="taskForm.status" :disabled="isViewMode" placeholder="请选择状态">
             <el-option
-              v-for="status in statusOptions"
+              v-for="status in taskStatusOptions"
               :key="status"
               :label="status"
               :value="status"
@@ -328,7 +261,7 @@ const deleteTask = async (task: TaskItem) => {
         <el-form-item label="优先级">
           <el-select v-model="taskForm.priority" :disabled="isViewMode" placeholder="请选择优先级">
             <el-option
-              v-for="priority in priorityOptions"
+              v-for="priority in taskPriorityOptions"
               :key="priority"
               :label="priority"
               :value="priority"
