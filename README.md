@@ -17,7 +17,7 @@
 
 ## 后端启动
 
-后端使用 Java 21、Maven 和 Spring Boot。Maven 加入 PATH 后可直接执行：
+后端使用 Java 17、Maven 和 Spring Boot。Maven 加入 PATH 后可直接执行：
 
 ```powershell
 cd backend
@@ -38,6 +38,20 @@ GET http://localhost:8080/api/health
 ```
 
 当前后端仅提供基础健康检查接口，暂未连接数据库，也暂未实现任务管理业务接口。
+
+## 后端接口
+
+健康检查：
+
+- `GET /api/health`
+
+任务管理接口当前使用后端内存数据模拟，服务重启后会恢复初始示例数据：
+
+- `GET /api/tasks`：查询任务列表
+- `GET /api/tasks/{id}`：查询任务详情
+- `POST /api/tasks`：新增任务
+- `PUT /api/tasks/{id}`：编辑任务
+- `DELETE /api/tasks/{id}`：删除任务
 
 ## 后续计划
 
